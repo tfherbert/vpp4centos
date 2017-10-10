@@ -75,30 +75,36 @@ elif [[ "$VPP_VERSION" =~ "stable" ]]; then
 else
     git checkout v$VPP_VERSION
 fi
+echo
+echo ====================================================================
+echo These patches must be applied now because they change the spec file.
+echo ====================================================================
+echo
+patch -p1 < $HOME/patches/0001-Add-dpdk-tarball-to-Sources-in-srpm.patch
+patch -p1 < $HOME/patches/0002-Set-rpmbuild-option-default-to-WITHOUT-aeasni-crypto.patch
 
 if [[ ! "${SRC}dummy" == "dummy" ]]; then
     echo "---------------------------------------"
     echo "Build SRPM"
     echo
-
 fi
-cd $HOME/rpms/vpp/extras/rpm
-#
-# Add local patches to spec file.
-#
-patch -p3 < $HOME/patches/0001-Add-local-patches-to-SRPM.patch
 
-#
-# Copy patches
-#
-cp $HOME/patches/* $HOME/rpms/vpp/extras/rpm/rpmbuild/SOURCES
-#
-# Update Changelog
-#
-cat $HOME/changelog.txt > $HOME/rpms/vpp/extras/rpm/rpmbuild/SOURCES/vpp.spec 
-#
-# Build RPM
-#
+make dist
+
+cd $HOME/rpms/vpp/extras/rpm
+mkdir -p rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS}
+
+cp $HOME/patches/* rpmbuild/SOURCES
+
+echo Changelog:
+echo =====================================================================
+cat $HOME/changelog.txt
+echo =====================================================================
+echo
+
+cat $HOME/changelog.txt >> vpp.spec
+
 make srpm
+cp vpp*.src.rpm $HOME
 
 exit 0

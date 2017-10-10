@@ -14,7 +14,6 @@ echo "Build vpp SRPM for 17.10 release"
 
 bash -x build-vpp-srpm.sh -g stable/1710
 
-echo =============================Clean up temporary directories================================
 bash -x clean.sh
 
 exit 0
