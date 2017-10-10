@@ -1,0 +1,37 @@
+From 1ac64d9b8c6b2cc03bb9923713629bbde999ef6e Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Fri, 6 Oct 2017 14:59:38 -0400
+Subject: [PATCH] Add local patches to SRPM
+
+Change-Id: Ia81613e8bbb206edf6c88af2e3f02fa4fd037d89
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ extras/rpm/vpp.spec | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
+index d10f48d..ad6be2d 100644
+--- a/extras/rpm/vpp.spec
++++ b/extras/rpm/vpp.spec
+@@ -56,6 +56,9 @@ Source: %{name}-%{_version}-%{_release}.tar.xz
+ Source1: http://fast.dpdk.org/rel/17.08/dpdk-17.08.tar.xz
+ # Source: vpp-latest.tar.xz
+ 
++Patch0: 0001-Add-dpdk-tarball-to-Sources-in-srpm.patch
++Patch1: 0002-Set-rpmbuild-option-default-to-WITHOUT-aeasni-crypto.patch
++
+ %description
+ This package provides VPP executables: vpp, vpp_api_test, vpp_json_test
+ vpp - the vector packet engine
+@@ -125,6 +128,8 @@ This package contains the python bindings for the vpp api
+ rm -rf %{name}-%{_version}
+ rm -rf %{_tmp_build_dir}
+ /usr/bin/xz -dc '%{_sourcedir}/%{name}-%{_version}-%{_release}.tar.xz' | /usr/bin/tar -xf -
++%patch0
++%patch1
+ mv %{name}-%{_version} %{_tmp_build_dir}
+ cd '%{_tmp_build_dir}'
+ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
+-- 
+2.5.5
+

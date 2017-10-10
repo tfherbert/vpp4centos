@@ -1,0 +1,7 @@
+%changelog
+* Fri Oct 6 2017 Thomas F Herbert <therbert@redhat.com> 17.10-rc1
+- Initial VPP release
+* Fri Oct 6 2017 Thomas F Herbert <therbert@redhat.com> 17.10-rc1
+- Set rpmbuild option default to WITHOUT aesni crypto  
+* Fri Oct 6 2017 Thomas F Herbert <therbert@redhat.com> 17.10-rc1
+- Add dpdk tarball to Sources
