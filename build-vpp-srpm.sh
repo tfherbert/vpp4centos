@@ -47,7 +47,7 @@ while getopts "g:hkp:s:u:v" opt; do
 done
 
 if [ -z $VPP_REPO_URL ]; then
-    VPP_REPO_URL=ssh://tfherbert@gerrit.fd.io:29418/vpp
+    VPP_REPO_URL=https://gerrit.fd.io/r/vpp
 fi
 if [ -z $VPP_VERSION ]; then
     VPP_VERSION=master
