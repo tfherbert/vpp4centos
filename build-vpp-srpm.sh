@@ -20,7 +20,7 @@ echo executing $0 $@
 echo executing on machine `uname -a`
 
 usage() {
-    echo "$0 -g < [master] | [tag] | [commit] > -h -k -p < URL >        \
+    echo "$0 < -c commit -g > < [master] | [tag] > -h -k -p < URL >        \
              -u < URL > -v                                              \
                                                                         \
     -g <VPP TAG>   -- VPP release tag commit to build. The default is \
@@ -28,8 +28,11 @@ usage() {
     -h              -- print this message                               \
     -v              -- Set verbose mode."
 }
-while getopts "g:hkp:s:u:v" opt; do
+while getopts "c:g:hkp:s:u:v" opt; do
     case "$opt" in
+        c)
+            COMMIT=${OPTARG}
+            ;;
         g)
             VPP_VERSION=${OPTARG}
             ;;
@@ -68,10 +71,10 @@ fi
 git clone $VPP_REPO_URL
 cd vpp
 
-if [[ "$VPP_VERSION" =~ "master" ]]; then
+if [ ! -z $COMMIT ]; then
+    git checkout $COMMIT
+elif [[ "$VPP_VERSION" =~ "master" ]]; then
     git checkout master
-elif [[ "$VPP_VERSION" =~ "stable" ]]; then
-    git checkout -b $VPP_VERSION origin/$VPP_VERSION
 else
     git checkout v$VPP_VERSION
 fi
