@@ -79,6 +79,30 @@ else
     git checkout v$VPP_VERSION
 fi
 echo
+echo ==============================================
+echo make dist tarball for this release.
+echo ==============================================
+make dist
+
+TARBALL=`realpath $TMPDIR/vpp/build-root/vpp-latest.tar.xz`
+BASENAME=`basename $TARBALL | sed -e s/.tar.\*//`
+VERSION=`echo $BASENAME | cut -f2 -d-`
+RELEASE=`echo $BASENAME | cut -f3- -d- | sed -e s/-/_/g`
+
+echo ==============================================
+echo Building SRPM: version: $VERSION release: $RELEASE
+echo ==============================================
+
+cp build-root/vpp-latest.tar.xz $TMPDIR
+cd $TMPDIR
+if [ ! -d dist ] ; then mkdir dist ; fi
+
+DISTDIR=`mktemp -d`
+cd $DISTDIR
+tar -xJf $TARBALL
+
+cd vpp-$VERSION
+echo
 echo ====================================================================
 echo These patches must be applied now because they change the spec file.
 echo ====================================================================
@@ -92,12 +116,8 @@ if [[ ! "${SRC}dummy" == "dummy" ]]; then
     echo
 fi
 
-make dist
-
-cd $HOME/rpms/vpp/extras/rpm
-mkdir -p rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS}
-
-cp $HOME/patches/* rpmbuild/SOURCES
+mkdir -p extras/rpm/rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS}
+cp $HOME/patches/* extras/rpm/rpmbuild/SOURCES
 
 echo Changelog:
 echo =====================================================================
@@ -105,9 +125,10 @@ cat $HOME/changelog.txt
 echo =====================================================================
 echo
 
-cat $HOME/changelog.txt >> vpp.spec
+cat $HOME/changelog.txt >> extras/rpm/rpmbuild/vpp.spec
 
-make srpm
-cp vpp*.src.rpm $HOME
+make pkg-srpm
+cp $DISTDIR/vpp-$VERSION/extras/rpm/vpp*.src.rpm $HOME
+if [ ! -d $DISTDIR ] ; then rm -rf $DISTDIR ; fi
 
 exit 0

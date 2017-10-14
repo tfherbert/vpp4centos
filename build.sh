@@ -12,8 +12,8 @@ set -e
 echo =============================17.10================================
 echo "Build vpp SRPM for 17.10 release"
 
-bash -x build-vpp-srpm.sh -c 87f1411 -g stable/1710
+./build-vpp-srpm.sh -c 87f1411 -g stable/1710
 
-bash -x clean.sh
+./clean.sh
 
 exit 0

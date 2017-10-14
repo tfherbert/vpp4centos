@@ -1,0 +1,11 @@
+vpp4centos:
+
+Prepare upstream vpp source RPMs for RHEL and Centos distributions.
+
+VPP stands for the Vector Pipeline Processor.
+It is a virtual software dataplane and full service vRouter stack.
+
+For more information about VPP and the fido project see the following:
+
+http://fd.io
+http://wiki.fd.io/vpp
