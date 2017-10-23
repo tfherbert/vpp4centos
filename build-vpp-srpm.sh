@@ -107,7 +107,14 @@ echo ====================================================================
 echo These patches must be applied now because they change the spec file.
 echo ====================================================================
 echo
-patch -p1 < $HOME/patches/0001-Add-dpdk-tarball-to-Sources-in-srpm.patch
+if [ "$VERSION" = "18.01" ] ; then
+    echo Apply patch0001-Add-dpdk-tarball-to-Sources-in-srpm-1801
+    patch -p1 < $HOME/patches/0001-Add-dpdk-tarball-to-Sources-in-srpm-1801.patch
+else
+    echo Apply patch 0001-Add-dpdk-tarball-to-Sources-in-srpm
+    patch -p1 < $HOME/patches/0001-Add-dpdk-tarball-to-Sources-in-srpm.patch
+fi
+echo Apply patch 0002-Set-rpmbuild-option-default-to-WITHOUT-aeasni-crypto
 patch -p1 < $HOME/patches/0002-Set-rpmbuild-option-default-to-WITHOUT-aeasni-crypto.patch
 
 if [[ ! "${SRC}dummy" == "dummy" ]]; then

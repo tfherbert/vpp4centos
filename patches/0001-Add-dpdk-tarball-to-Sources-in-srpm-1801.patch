@@ -1,0 +1,59 @@
+From 49b43a5e8c7714398981daa0595d08dbb5cd6cd6 Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Tue, 12 Sep 2017 19:34:11 -0400
+Subject: [PATCH] Add dpdk tarball to Sources in srpm.
+
+Change-Id: I0ffa190738fd11ac6b2a1782f69e97929aab3885
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ extras/rpm/Makefile | 6 ++++++
+ extras/rpm/vpp.spec | 2 ++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/extras/rpm/Makefile b/extras/rpm/Makefile
+index f4b63b6..868268f 100644
+--- a/extras/rpm/Makefile
++++ b/extras/rpm/Makefile
+@@ -23,6 +23,11 @@ VERSION=$(shell echo $(BASENAME) | cut -f2 -d-)
+ RELEASE=$(shell echo $(BASENAME) | cut -f3- -d- | sed -e s/-/_/g)
+ PC=%
+ 
++DPDK_BASE_URL ?= http://fast.dpdk.org/rel
++DPDK_VERSION ?= 17.08
++DPDK_TARBALL := dpdk-$(DPDK_VERSION).tar.xz
++DPDK_TAR_URL := $(DPDK_BASE_URL)/$(DPDK_TARBALL)
++
+ all: RPM
+ 
+ ifeq ($(filter opensuse,$(OS_ID)),$(OS_ID))
+@@ -54,6 +59,7 @@ srpm:
+ 	@echo $(TARBALL)
+ 	mkdir -p rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS}
+ 	cp $(TARBALL) rpmbuild/SOURCES/vpp-$(VERSION)-$(RELEASE).tar.xz
++	curl -o rpmbuild/SOURCES/$(DPDK_TARBALL) -LO $(DPDK_TAR_URL)
+ 	cp vpp.spec rpmbuild/SOURCES
+ 	sed -i '1s/^/$(PC)define _version $(VERSION)\n/' rpmbuild/SOURCES/vpp.spec
+ 	sed -i '1s/^/$(PC)define _release $(RELEASE)\n/' rpmbuild/SOURCES/vpp.spec
+diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
+index 7490a16..2ae3b1f 100644
+--- a/extras/rpm/vpp.spec
++++ b/extras/rpm/vpp.spec
+@@ -57,6 +57,7 @@ BuildRequires: numactl-devel
+ BuildRequires: autoconf automake libtool byacc bison flex
+ 
+ Source: %{name}-%{_version}-%{_release}.tar.xz
++Source1: http://fast.dpdk.org/rel/17.08/dpdk-17.08.tar.xz
+ # Source: vpp-latest.tar.xz
+ 
+ %description
+@@ -131,6 +132,7 @@ rm -rf %{_tmp_build_dir}
+ mv %{name}-%{_version} %{_tmp_build_dir}
+ cd '%{_tmp_build_dir}'
+ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
++cp %{_sourcedir}/dpdk-* dpdk
+ 
+ %pre
+ # Add the vpp group
+-- 
+2.5.5
+
