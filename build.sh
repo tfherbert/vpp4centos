@@ -9,11 +9,34 @@
 #    limitations under the License.
 set -e
 
+usage() {
+    echo "$0 < -c -v -h?
+
+    -h|?            -- print this message
+    -w              -- -w no to disable clean up. Default is yes"
+}
+
+CLEAN=yes
+
+while getopts "w:hv?" opt; do
+    case "$opt" in
+        w)
+            CLEAN="${OPTARG}"
+            ;;
+        h|\?)
+            usage
+            exit 1
+            ;;
+    esac
+done
+
 echo =============================17.10================================
 echo "Build vpp SRPM for 17.10 release"
 
 ./build-vpp-srpm.sh -g 17.10
 
-./clean.sh
+if [[ -z "${CLEAN##*y*}" ]]; then
+    ./clean.sh
+fi
 
 exit 0
