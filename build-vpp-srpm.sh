@@ -117,6 +117,11 @@ fi
 echo Apply patch 0002-Set-rpmbuild-option-default-to-WITHOUT-aeasni-crypto
 patch -p1 < $HOME/patches/0002-Set-rpmbuild-option-default-to-WITHOUT-aeasni-crypto.patch
 
+if [[ $RELEASE == "release" ]] ; then
+    echo Apply patch to make package release conform to Fedora guidelines
+    patch -p1 < $HOME/patches/0001-Make-Package-release-number-confirm-to-Fedora.patch
+fi
+
 if [[ ! "${SRC}dummy" == "dummy" ]]; then
     echo "---------------------------------------"
     echo "Build SRPM"

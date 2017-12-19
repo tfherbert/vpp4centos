@@ -1,0 +1,26 @@
+From 9b33e2e5d99dec7d527fef993390d6e89d8f1a53 Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Mon, 18 Dec 2017 19:42:15 -0500
+Subject: [PATCH] Make Package release number confirm to Fedora packaging
+ guidelines.
+
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ extras/rpm/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/extras/rpm/Makefile b/extras/rpm/Makefile
+index 534e4d43..fce8f052 100644
+--- a/extras/rpm/Makefile
++++ b/extras/rpm/Makefile
+@@ -16,7 +16,7 @@ TARBALL=$(shell realpath ../../build-root/vpp-latest.tar.xz)
+ 
+ BASENAME=$(shell basename $(TARBALL) | sed -e s/.tar.\*//)
+ VERSION=$(shell echo $(BASENAME) | cut -f2 -d-)
+-RELEASE=$(shell echo $(BASENAME) | cut -f3- -d- | sed -e s/-/_/g)
++RELEASE=1
+ PC=%
+ 
+ all: RPM
+--
+2.14.3
