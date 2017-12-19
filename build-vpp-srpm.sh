@@ -137,7 +137,7 @@ cat $HOME/changelog.txt
 echo =====================================================================
 echo
 
-cat $HOME/changelog.txt >> extras/rpm/rpmbuild/vpp.spec
+cat $HOME/changelog.txt >> extras/rpm/vpp.spec
 
 make pkg-srpm
 cp $DISTDIR/vpp-$VERSION/extras/rpm/vpp*.src.rpm $HOME

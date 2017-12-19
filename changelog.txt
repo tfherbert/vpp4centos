@@ -1,10 +1,11 @@
 
 %changelog
-* Fri Oct 6 2017 Thomas F Herbert <therbert@redhat.com> 17.10-rc1~23_g87f1411
-- Initial VPP release
+* Tue Dec 19 2017 Thomas F Herbert <therbert@redhat.com> 17.10-1
+- Fix missing changelog problem
+- Change inital release number from "release" to "1"
+* Thu Dec 7 2017 Thomas F Herbert <therbert@redhat.com> 17.10 release
+- Set release tag to v17.10
 * Fri Oct 6 2017 Thomas F Herbert <therbert@redhat.com> 17.10-rc1~23_g87f1411
 - Set rpmbuild option default to WITHOUT aesni crypto  
-* Fri Oct 6 2017 Thomas F Herbert <therbert@redhat.com> 17.10-rc1~23_g87f1411
 - Add dpdk tarball to Sources
-* Fri Dec 7 2017 Thomas F Herbert <therbert@redhat.com> 17.10 release
-- Set release tag to v17.10
+- Initial VPP release
