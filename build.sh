@@ -30,10 +30,10 @@ while getopts "w:hv?" opt; do
     esac
 done
 
-echo =============================17.10================================
-echo "Build vpp SRPM for 17.10 release"
+echo =============================18.01.1================================
+echo "Build vpp SRPM for 18.01.1 release"
 
-./build-vpp-srpm.sh -g 17.10
+./build-vpp-srpm.sh -g 18.01.1
 
 if [[ -z "${CLEAN##*y*}" ]]; then
     ./clean.sh

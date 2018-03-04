@@ -1,24 +1,24 @@
-From 779a800d8bd41fbe2f618f90ac263882994c4f99 Mon Sep 17 00:00:00 2001
+From 6df92ecd3848c8c91a787fc5b9bb72ecb9858d97 Mon Sep 17 00:00:00 2001
 From: Thomas F Herbert <therbert@redhat.com>
-Date: Tue, 12 Sep 2017 19:43:25 -0400
-Subject: [PATCH 2/2] Set rpmbuild option default to WITHOUT aeasni crypto.
+Date: Tue, 27 Feb 2018 17:15:51 -0500
+Subject: [PATCH 2/2] Set rpmbuild option default to WITHOUT aeasni crypto
 
-Change-Id: Ic55264135d374a4b5e3f881d8237deefafc11f29
+Change-Id: I78cbfa86499ef7b79ec28790e297f5c1740919ad
 Signed-off-by: Thomas F Herbert <therbert@redhat.com>
 ---
  extras/rpm/vpp.spec | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
-index 41482af..2c8e6a0 100644
+index 268a31f1..9ed1f779 100644
 --- a/extras/rpm/vpp.spec
 +++ b/extras/rpm/vpp.spec
 @@ -1,4 +1,4 @@
 -%bcond_without aesni
 +%bcond_with aesni
+ %{!?_topdir:%define _topdir %(pwd)}
  %define _vpp_build_dir   build-tool-native
  %define _unitdir         /lib/systemd/system
- %define _topdir          %(pwd)
 -- 
-2.5.5
+2.14.3
 

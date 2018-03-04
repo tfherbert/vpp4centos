@@ -19,6 +19,8 @@ index 534e4d43..fce8f052 100644
  VERSION=$(shell echo $(BASENAME) | cut -f2 -d-)
 -RELEASE=$(shell echo $(BASENAME) | cut -f3- -d- | sed -e s/-/_/g)
 +RELEASE=1
+ BR=$(shell realpath $(CURDIR)/../../build-root)
+ RPMBUILD=$(BR)/rpmbuild
  PC=%
  
  all: RPM

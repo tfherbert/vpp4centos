@@ -56,8 +56,7 @@ if [ -z $VPP_VERSION ]; then
     VPP_VERSION=master
 fi
 
-HOME=`pwd`
-TOPDIR=$HOME
+TOPDIR=`pwd`
 TMPDIR=$TOPDIR/rpms
 
 mkdir -p $TMPDIR
@@ -69,6 +68,7 @@ if [ -d vpp ]; then
     rm -rf vpp
 fi
 git clone $VPP_REPO_URL
+
 cd vpp
 
 if [ ! -z $COMMIT ]; then
@@ -78,6 +78,7 @@ elif [[ "$VPP_VERSION" =~ "master" ]]; then
 else
     git checkout v$VPP_VERSION
 fi
+
 echo
 echo ==============================================
 echo make dist tarball for this release.
@@ -102,45 +103,47 @@ cd $DISTDIR
 tar -xJf $TARBALL
 
 cd vpp-$VERSION
+
+BR=$DISTDIR/vpp-$VERSION/build-root
+RPMBUILD=$BR/rpmbuild
 echo
 echo ====================================================================
 echo These patches must be applied now because they change the spec file.
 echo ====================================================================
 echo
-if [ "$VERSION" = "18.01" ] ; then
-    echo Apply patch0001-Add-dpdk-tarball-to-Sources-in-srpm-1801
-    patch -p1 < $HOME/patches/0001-Add-dpdk-tarball-to-Sources-in-srpm-1801.patch
+if [ "$VERSION" = "18.01.1" ] ; then
+    echo Apply patch 0001-Add-dpdk-to-source-tarball-for-version-18.01.1.patch
+    patch -p1 < $TOPDIR/patches/0001-Add-dpdk-to-source-tarball-for-version-18.01.1.patch
 else
     echo Apply patch 0001-Add-dpdk-tarball-to-Sources-in-srpm
-    patch -p1 < $HOME/patches/0001-Add-dpdk-tarball-to-Sources-in-srpm.patch
+    patch -p1 < $TOPDIR/patches/0001-Add-dpdk-tarball-to-Sources-in-srpm.patch
 fi
 echo Apply patch 0002-Set-rpmbuild-option-default-to-WITHOUT-aeasni-crypto
-patch -p1 < $HOME/patches/0002-Set-rpmbuild-option-default-to-WITHOUT-aeasni-crypto.patch
+patch -p1 < $TOPDIR/patches/0002-Set-rpmbuild-option-default-to-WITHOUT-aeasni-crypto.patch
+
+echo Apply patch 0002-Set-version-and-release-into-srpm-spec-file.patch
+patch -p1 < $TOPDIR/patches/0002-Set-version-and-release-into-srpm-spec-file.patch
 
 if [[ $RELEASE == "release" ]] ; then
     echo Apply patch to make package release conform to Fedora guidelines
-    patch -p1 < $HOME/patches/0001-Make-Package-release-number-confirm-to-Fedora.patch
+    patch -p1 < $TOPDIR/patches/0001-Make-Package-release-number-confirm-to-Fedora.patch
 fi
 
-if [[ ! "${SRC}dummy" == "dummy" ]]; then
-    echo "---------------------------------------"
-    echo "Build SRPM"
-    echo
-fi
+echo Apply patch0003-Remove-subunit-from-Centos-requirements.patch
+patch -p1 < $TOPDIR/patches/0003-Remove-subunit-from-Centos-requirements.patch
 
-mkdir -p extras/rpm/rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS}
-cp $HOME/patches/* extras/rpm/rpmbuild/SOURCES
+mkdir -p $RPMBUILD/{RPMS,SRPMS,BUILD,SOURCES,SPECS}
+cp $TOPDIR/patches/* $RPMBUILD/SOURCES
 
 echo Changelog:
 echo =====================================================================
-cat $HOME/changelog.txt
+cat $TOPDIR/changelog.txt
 echo =====================================================================
 echo
 
-cat $HOME/changelog.txt >> extras/rpm/vpp.spec
+cat $TOPDIR/changelog.txt >> $DISTDIR/vpp-$VERSION/extras/rpm/vpp.spec
 
 make pkg-srpm
-cp $DISTDIR/vpp-$VERSION/extras/rpm/vpp*.src.rpm $HOME
-if [ ! -d $DISTDIR ] ; then rm -rf $DISTDIR ; fi
-
+cp $BR/vpp*.src.rpm $TOPDIR
+#if [ ! -d $DISTDIR ] ; then rm -rf $DISTDIR ; fi
 exit 0

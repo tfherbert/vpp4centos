@@ -1,0 +1,34 @@
+From c52bc4804c8edd664a6de2c9de7e7b3fbdc3d5c2 Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Sun, 4 Mar 2018 16:47:13 -0500
+Subject: [PATCH 2/2] Set version and release into srpm spec file.
+
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ extras/rpm/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/extras/rpm/Makefile b/extras/rpm/Makefile
+index e3665418..b301e1fc 100644
+--- a/extras/rpm/Makefile
++++ b/extras/rpm/Makefile
+@@ -41,14 +41,14 @@ spec:
+ 	@echo $(TARBALL)
+ 	mkdir -p $(RPMBUILD)/{RPMS,SRPMS,BUILD,SOURCES,SPECS}
+ 	cp $(TARBALL) $(RPMBUILD)/SOURCES/vpp-$(VERSION)-$(RELEASE).tar.xz
++	sed -i '1s/^/$(PC)define _version $(VERSION)\n/' $(SPEC_FILE)
++	sed -i '1s/^/$(PC)define _release $(RELEASE)\n/' $(SPEC_FILE)
+ 	cp $(SPEC_FILE) $(RPMBUILD)/SPECS
+ 
+ srpm: spec
+ 	curl -o $(RPMBUILD)/SOURCES/$(DPDK_TARBALL) -LO $(DPDK_TAR_URL)
+ 	rpmbuild -bs \
+ 	  --define "_topdir $(RPMBUILD)" \
+-	  --define "_version $(VERSION)" \
+-	  --define "_release $(RELEASE)" \
+ 	  $(RPMBUILD)/SPECS/$(SPEC_FILE)
+ 	mv $$(find $(RPMBUILD)/SRPMS -name \*.src.rpm -type f) $(BR)
+ 
+-- 
+2.14.3
+

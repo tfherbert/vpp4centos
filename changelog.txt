@@ -1,5 +1,9 @@
 
 %changelog
+* Mon Mar 5 2018 Thomas F Herbert <therbert@redhat.com> 18.01.1-1
+- Set release git tag to v18.01.1
+- Add dpdk 1611 tarball to Sources
+- Remove dependency on subunit
 * Tue Dec 19 2017 Thomas F Herbert <therbert@redhat.com> 17.10-1
 - Fix missing changelog problem
 - Change inital release number from "release" to "1"

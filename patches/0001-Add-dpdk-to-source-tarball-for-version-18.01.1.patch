@@ -1,0 +1,59 @@
+From 511a6008fd192ae182ae3ca2d03ec5b9f0ccdb32 Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Mon, 26 Feb 2018 18:17:43 -0500
+Subject: [PATCH 1/2] Add dpdk to source tarball for version 18.01.1
+
+Change-Id: I667fdb66b474983c3baa521bc97d9532f431b75c
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ extras/rpm/Makefile | 6 ++++++
+ extras/rpm/vpp.spec | 2 ++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/extras/rpm/Makefile b/extras/rpm/Makefile
+index 4bbeab55..e3665418 100644
+--- a/extras/rpm/Makefile
++++ b/extras/rpm/Makefile
+@@ -24,6 +24,11 @@ BR=$(shell realpath $(CURDIR)/../../build-root)
+ RPMBUILD=$(BR)/rpmbuild
+ PC=%
+ 
++DPDK_BASE_URL ?= http://fast.dpdk.org/rel
++DPDK_VERSION ?= 17.11
++DPDK_TARBALL := dpdk-$(DPDK_VERSION).tar.xz
++DPDK_TAR_URL := $(DPDK_BASE_URL)/$(DPDK_TARBALL)
++
+ all: RPM
+ 
+ ifeq ($(filter opensuse,$(OS_ID)),$(OS_ID))
+@@ -39,6 +44,7 @@ spec:
+ 	cp $(SPEC_FILE) $(RPMBUILD)/SPECS
+ 
+ srpm: spec
++	curl -o $(RPMBUILD)/SOURCES/$(DPDK_TARBALL) -LO $(DPDK_TAR_URL)
+ 	rpmbuild -bs \
+ 	  --define "_topdir $(RPMBUILD)" \
+ 	  --define "_version $(VERSION)" \
+diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
+index 6bdecb4d..268a31f1 100644
+--- a/extras/rpm/vpp.spec
++++ b/extras/rpm/vpp.spec
+@@ -53,6 +53,7 @@ BuildRequires: autoconf automake libtool byacc bison flex
+ BuildRequires: boost boost-devel
+ 
+ Source: %{name}-%{_version}-%{_release}.tar.xz
++Source1: http://fast.dpdk.org/rel/17.11/dpdk-17.11.tar.xz
+ # Source: vpp-latest.tar.xz
+ 
+ %description
+@@ -127,6 +128,7 @@ rm -rf %{_tmp_build_dir}
+ mv %{name}-%{_version} %{_tmp_build_dir}
+ cd '%{_tmp_build_dir}'
+ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
++cp %{_sourcedir}/dpdk-* dpdk
+ 
+ %pre
+ # Add the vpp group
+-- 
+2.14.3
+

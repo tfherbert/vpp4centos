@@ -1,0 +1,54 @@
+From ea1ddfb9553fb18f10b70981064a7bc7889b4d28 Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Mon, 5 Mar 2018 14:39:58 -0500
+Subject: [PATCH 3/3] Remove subunit from Centos requirements.
+
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ Makefile            | 3 ++-
+ extras/rpm/vpp.spec | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index ec3e92d8..2d69de48 100644
+--- a/Makefile
++++ b/Makefile
+@@ -84,14 +84,15 @@ RPM_DEPENDS += apr-devel
+ RPM_DEPENDS += numactl-devel
+ RPM_DEPENDS += check check-devel
+ RPM_DEPENDS += boost boost-devel
+-RPM_DEPENDS += subunit subunit-devel
+ 
+ ifeq ($(OS_ID)-$(OS_VERSION_ID),fedora-25)
++	RPM_DEPENDS += subunit subunit-devel
+ 	RPM_DEPENDS += openssl-devel
+ 	RPM_DEPENDS += python-devel
+ 	RPM_DEPENDS += python2-virtualenv
+ 	RPM_DEPENDS_GROUPS = 'C Development Tools and Libraries'
+ else ifeq ($(shell if [ "$(OS_ID)" = "fedora" ]; then test $(OS_VERSION_ID) -gt 25; echo $$?; fi),0)
++	RPM_DEPENDS += subunit subunit-devel
+ 	RPM_DEPENDS += compat-openssl10-devel
+ 	RPM_DEPENDS += python2-devel
+ 	RPM_DEPENDS += python2-virtualenv
+diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
+index 268a31f1..a31dee0b 100644
+--- a/extras/rpm/vpp.spec
++++ b/extras/rpm/vpp.spec
+@@ -32,12 +32,13 @@ Release: %{_release}
+ Requires: vpp-lib = %{_version}-%{_release}, net-tools, pciutils, python
+ BuildRequires: systemd, chrpath
+ BuildRequires: check, check-devel
+-BuildRequires: subunit, subunit-devel
+ %if 0%{?fedora} >= 26
++BuildRequires: subunit, subunit-devel
+ BuildRequires: compat-openssl10-devel
+ BuildRequires: python2-devel, python2-virtualenv
+ %else
+ %if 0%{?fedora} == 25
++BuildRequires: subunit, subunit-devel
+ BuildRequires: openssl-devel
+ BuildRequires: python-devel, python2-virtualenv
+ %else
+-- 
+2.14.3
+
