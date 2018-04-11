@@ -28,8 +28,11 @@ usage() {
     -h              -- print this message                               \
     -v              -- Set verbose mode."
 }
-while getopts "c:g:hkp:s:u:v" opt; do
+while getopts "b:c:g:hkp:s:u:v" opt; do
     case "$opt" in
+        b)
+            BRANCH=${OPTARG}
+            ;;
         c)
             COMMIT=${OPTARG}
             ;;
@@ -71,12 +74,16 @@ git clone $VPP_REPO_URL
 
 cd vpp
 
-if [ ! -z $COMMIT ]; then
-    git checkout $COMMIT
-elif [[ "$VPP_VERSION" =~ "master" ]]; then
-    git checkout master
+if [ ! -z $BRANCH ]; then
+    git checkout $BRANCH
 else
-    git checkout v$VPP_VERSION
+    if [ ! -z $COMMIT ]; then
+        git checkout $COMMIT
+    elif [[ "$VPP_VERSION" =~ "master" ]]; then
+        git checkout master
+    else
+        git checkout v$VPP_VERSION
+    fi
 fi
 
 echo
@@ -111,7 +118,12 @@ echo ====================================================================
 echo These patches must be applied now because they change the spec file.
 echo ====================================================================
 echo
-if [ "$VERSION" = "18.01.1" ] ; then
+if [ "$VERSION" = "18.04" ] ; then
+    echo Reverse apply patch 0001-Restore-building-of-debuginfo-RPMs.patch
+    git apply -R $TOPDIR/patches/0001-Restore-building-of-debuginfo-RPMs.patch
+    echo Apply patch 0001-Add-dpdk-to-source-tarball-for-version-18.01.1.patch
+    patch -p1 < $TOPDIR/patches/0001-Add-dpdk-to-source-tarball-for-version-18.01.1.patch
+elif [ "$VERSION" = "18.01.1" ] ; then
     echo Apply patch 0001-Add-dpdk-to-source-tarball-for-version-18.01.1.patch
     patch -p1 < $TOPDIR/patches/0001-Add-dpdk-to-source-tarball-for-version-18.01.1.patch
 else
@@ -129,8 +141,10 @@ if [[ $RELEASE == "release" ]] ; then
     patch -p1 < $TOPDIR/patches/0001-Make-Package-release-number-confirm-to-Fedora.patch
 fi
 
-echo Apply patch0003-Remove-subunit-from-Centos-requirements.patch
-patch -p1 < $TOPDIR/patches/0003-Remove-subunit-from-Centos-requirements.patch
+if [ ! "$VERSION" = "18.04" ] ; then
+    echo Apply patch0003-Remove-subunit-from-Centos-requirements.patch
+    patch -p1 < $TOPDIR/patches/0003-Remove-subunit-from-Centos-requirements.patch
+fi
 
 mkdir -p $RPMBUILD/{RPMS,SRPMS,BUILD,SOURCES,SPECS}
 cp $TOPDIR/patches/* $RPMBUILD/SOURCES
