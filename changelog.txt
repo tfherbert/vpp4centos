@@ -1,6 +1,6 @@
 
 %changelog
-* Tue Apr 10 2018 Thomas F Herbert <therbert@redhat.com> 18.04-1
+* Thu May 3 2018 Thomas F Herbert <therbert@redhat.com> 18.04-1
 - Reverse upstream removal of short temp name rpmbuild fix
 * Mon Mar 5 2018 Thomas F Herbert <therbert@redhat.com> 18.01.1-1
 - Set release git tag to v18.01.1

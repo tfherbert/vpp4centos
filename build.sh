@@ -33,7 +33,7 @@ done
 echo =============================18.04================================
 echo "Build vpp SRPM for 18.04 release"
 
-./build-vpp-srpm.sh -b stable/1804
+./build-vpp-srpm.sh -g 18.04
 
 if [[ -z "${CLEAN##*y*}" ]]; then
     ./clean.sh

@@ -1,0 +1,58 @@
+From c0724900d5afd3eea6b9d1f360cfb90bdd8bcab6 Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Thu, 3 May 2018 16:07:37 -0400
+Subject: [PATCH 2/2] Add dpdk to source tarball for version 18.04
+
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ extras/rpm/Makefile | 6 ++++++
+ extras/rpm/vpp.spec | 2 ++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/extras/rpm/Makefile b/extras/rpm/Makefile
+index 4bbeab55..7e2fc522 100644
+--- a/extras/rpm/Makefile
++++ b/extras/rpm/Makefile
+@@ -24,6 +24,11 @@ BR=$(shell realpath $(CURDIR)/../../build-root)
+ RPMBUILD=$(BR)/rpmbuild
+ PC=%
+ 
++DPDK_BASE_URL ?=http://static.dpdk.org/rel/
++DPDK_VERSION ?= 18.02.1
++DPDK_TARBALL := dpdk-$(DPDK_VERSION).tar.xz
++DPDK_TAR_URL := $(DPDK_BASE_URL)/$(DPDK_TARBALL)
++
+ all: RPM
+ 
+ ifeq ($(filter opensuse,$(OS_ID)),$(OS_ID))
+@@ -39,6 +44,7 @@ spec:
+ 	cp $(SPEC_FILE) $(RPMBUILD)/SPECS
+ 
+ srpm: spec
++	curl -o $(RPMBUILD)/SOURCES/$(DPDK_TARBALL) -LO $(DPDK_TAR_URL)
+ 	rpmbuild -bs \
+ 	  --define "_topdir $(RPMBUILD)" \
+ 	  --define "_version $(VERSION)" \
+diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
+index eb47b1b8..095991f0 100644
+--- a/extras/rpm/vpp.spec
++++ b/extras/rpm/vpp.spec
+@@ -75,6 +75,7 @@ BuildRequires: boost boost-devel
+ BuildRequires: selinux-policy selinux-policy-devel
+ 
+ Source: %{name}-%{_version}-%{_release}.tar.xz
++Source1: http://static.dpdk.org/rel/dpdk-18.02.1.tar.xz
+ # Source: vpp-latest.tar.xz
+ 
+ %description
+@@ -158,6 +159,7 @@ rm -rf %{_tmp_build_dir}
+ mv %{name}-%{_version} %{_tmp_build_dir}
+ cd '%{_tmp_build_dir}'
+ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
++cp %{_sourcedir}/dpdk-* dpdk
+ 
+ %pre
+ # Add the vpp group
+-- 
+2.14.3
+
