@@ -1,0 +1,38 @@
+From 25a4619b39b5c283848d4d1ccd5c83d4e7a251ca Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Thu, 3 May 2018 19:17:13 -0400
+Subject: [PATCH] python lex and yacc are required for build
+
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ extras/rpm/vpp.spec | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
+index 095991f0..227ed76a 100644
+--- a/extras/rpm/vpp.spec
++++ b/extras/rpm/vpp.spec
+@@ -53,17 +53,17 @@ BuildRequires: check, check-devel
+ %if 0%{?fedora} >= 26
+ BuildRequires: subunit, subunit-devel
+ BuildRequires: compat-openssl10-devel
+-BuildRequires: python2-devel, python2-virtualenv
++BuildRequires: python2-devel, python2-virtualenv, python2-ply
+ BuildRequires: mbedtls-devel
+ %else
+ %if 0%{?fedora} == 25
+ BuildRequires: subunit, subunit-devel
+ BuildRequires: openssl-devel
+-BuildRequires: python-devel, python2-virtualenv
++BuildRequires: python-devel, python2-virtualenv, python2-ply
+ BuildRequires: mbedtls-devel
+ %else
+ BuildREquires: openssl-devel
+-BuildRequires: python-devel, python-virtualenv
++BuildRequires: python-devel, python-virtualenv, python-ply
+ %endif
+ %endif
+ BuildRequires: libffi-devel
+-- 
+2.14.3
+
