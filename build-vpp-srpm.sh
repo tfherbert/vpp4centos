@@ -125,7 +125,7 @@ if [ "$VERSION" = "18.04" ] ; then
     git apply $TOPDIR/patches/0001-Restore-building-of-debuginfo-RPMs.patch
     echo Apply patch 0002-Add-dpdk-to-source-tarball-for-version-18.04.patch
     patch -p1 < $TOPDIR/patches/0002-Add-dpdk-to-source-tarball-for-version-18.04.patch
-elif [ "$VERSION" = "18.01.1" ] ; then
+elif [ "$VERSION" = "18.01.1" ] || [ "$VERSION" = "18.01.2" ] ; then
     echo Apply patch 0001-Add-dpdk-to-source-tarball-for-version-18.01.1.patch
     patch -p1 < $TOPDIR/patches/0001-Add-dpdk-to-source-tarball-for-version-18.01.1.patch
 else

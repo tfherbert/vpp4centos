@@ -1,8 +1,7 @@
 
 %changelog
-* Thu May 3 2018 Thomas F Herbert <therbert@redhat.com> 18.04-1
-- Add python lex and yacc to build requirements
-- Reverse upstream removal of short temp name rpmbuild fix
+* Mon May 25 2018 Thomas F Herbert <therbert@redhat.com> 18.01.2-1
+- Set release git tag to v18.01.2
 * Mon Mar 5 2018 Thomas F Herbert <therbert@redhat.com> 18.01.1-1
 - Set release git tag to v18.01.1
 - Add dpdk 1611 tarball to Sources
