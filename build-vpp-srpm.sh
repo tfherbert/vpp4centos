@@ -118,13 +118,11 @@ echo ====================================================================
 echo These patches must be applied now because they change the spec file.
 echo ====================================================================
 echo
-if [ "$VERSION" = "18.04" ] ; then
-    echo Apply patch 0001-python-lex-and-yacc-are-required-for-build.patch
-    git apply $TOPDIR/patches/0001-python-lex-and-yacc-are-required-for-build.patch
+if [ "$VERSION" = "18.07" ] ; then
     echo Apply patch 0001-Restore-building-of-debuginfo-RPMs.patch
     git apply $TOPDIR/patches/0001-Restore-building-of-debuginfo-RPMs.patch
-    echo Apply patch 0002-Add-dpdk-to-source-tarball-for-version-18.04.patch
-    patch -p1 < $TOPDIR/patches/0002-Add-dpdk-to-source-tarball-for-version-18.04.patch
+    echo Apply patch 0002-Add-dpdk-to-source-tarball-for-version-18.07.patch
+    patch -p1 < $TOPDIR/patches/0002-Add-dpdk-to-source-tarball-for-version-18.07.patch
 elif [ "$VERSION" = "18.01.1" ] || [ "$VERSION" = "18.01.2" ] ; then
     echo Apply patch 0001-Add-dpdk-to-source-tarball-for-version-18.01.1.patch
     patch -p1 < $TOPDIR/patches/0001-Add-dpdk-to-source-tarball-for-version-18.01.1.patch
@@ -143,7 +141,7 @@ if [[ $RELEASE == "release" ]] ; then
     patch -p1 < $TOPDIR/patches/0001-Make-Package-release-number-confirm-to-Fedora.patch
 fi
 
-if [ ! "$VERSION" = "18.04" ] ; then
+if [ ! "$VERSION" = "18.07" ] ; then
     echo Apply patch0003-Remove-subunit-from-Centos-requirements.patch
     patch -p1 < $TOPDIR/patches/0003-Remove-subunit-from-Centos-requirements.patch
 fi
