@@ -1,7 +1,12 @@
 
 %changelog
-* Mon May 25 2018 Thomas F Herbert <therbert@redhat.com> 18.01.2-1
+* Tue Aug 14 2018 Thomas F Herbert <therbert@redhat.com> 18.07-1
+- Set release git tag to v18.07-1
+- Add dpdk 1805 tarball to Sources
+* Fri May 25 2018 Thomas F Herbert <therbert@redhat.com> 18.01.2-1
 - Set release git tag to v18.01.2
+* Tue May 8 2018 Thomas F Herbert <therbert@redhat.com> 18.04-1
+- Set release git tag to v18.04-1
 * Mon Mar 5 2018 Thomas F Herbert <therbert@redhat.com> 18.01.1-1
 - Set release git tag to v18.01.1
 - Add dpdk 1611 tarball to Sources
