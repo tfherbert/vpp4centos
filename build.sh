@@ -31,9 +31,9 @@ while getopts "w:hv?" opt; do
 done
 
 echo =============================18.07================================
-echo "Build vpp SRPM for 18.07 release"
+echo "Build vpp SRPM for 18.07.1 release"
 
-./build-vpp-srpm.sh -g 18.07
+./build-vpp-srpm.sh -g 18.07.1
 
 if [[ -z "${CLEAN##*y*}" ]]; then
     ./clean.sh
