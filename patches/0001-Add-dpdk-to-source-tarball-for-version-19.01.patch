@@ -1,0 +1,59 @@
+From 22d72b2937d9a523664a4342ac7c8b56f6f39471 Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Thu, 7 Mar 2019 17:37:35 -0500
+Subject: [PATCH] Add dpdk to source tarball for version 19.01
+
+Change-Id: I127e18f19a2901e0dcdad9d01c26a00f3e3ea8dd
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ extras/rpm/Makefile | 6 ++++++
+ extras/rpm/vpp.spec | 2 ++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/extras/rpm/Makefile b/extras/rpm/Makefile
+index 423c4207b..e80289632 100644
+--- a/extras/rpm/Makefile
++++ b/extras/rpm/Makefile
+@@ -24,6 +24,11 @@ BR=$(shell realpath $(CURDIR)/../../build-root)
+ RPMBUILD=$(BR)/rpmbuild
+ PC=%
+ 
++DPDK_BASE_URL ?=http://static.dpdk.org/rel/
++DPDK_VERSION ?= 18.11
++DPDK_TARBALL := dpdk-$(DPDK_VERSION).tar.xz
++DPDK_TAR_URL := $(DPDK_BASE_URL)/$(DPDK_TARBALL)
++
+ all: RPM
+ 
+ # SUSE rolling-release (a.k.a. Tumbleweed)
+@@ -46,6 +51,7 @@ spec:
+ 	cp $(SPEC_FILE) $(RPMBUILD)/SPECS
+ 
+ srpm: spec
++	curl -o $(RPMBUILD)/SOURCES/$(DPDK_TARBALL) -LO $(DPDK_TAR_URL)
+ 	rpmbuild -bs \
+ 	  --define "_topdir $(RPMBUILD)" \
+ 	  --define "_version $(VERSION)" \
+diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
+index 28dcdd3a8..b20af85dc 100644
+--- a/extras/rpm/vpp.spec
++++ b/extras/rpm/vpp.spec
+@@ -73,6 +73,7 @@ BuildRequires: boost boost-devel
+ BuildRequires: selinux-policy selinux-policy-devel
+ 
+ Source: %{name}-%{_version}-%{_release}.tar.xz
++Source1: http://fast.dpdk.org/rel/dpdk-18.11.tar.xz
+ # Source: vpp-latest.tar.xz
+ 
+ %description
+@@ -150,6 +151,7 @@ This package contains a tailored VPP SELinux policy
+ 
+ %prep
+ %setup -q -n %{name}-%{_version}
++cp %{_sourcedir}/dpdk-* build/external
+ 
+ %pre
+ # Add the vpp group
+-- 
+2.14.4
+

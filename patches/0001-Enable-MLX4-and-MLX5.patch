@@ -1,0 +1,73 @@
+From b396754e09a3aa9abfeb235e7d442c6964eac876 Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Sun, 24 Mar 2019 19:57:32 -0400
+Subject: [PATCH] Enable MLX4 and MLX5.
+
+Specify dependent packages for MLX.
+Start MLX services before VPP which loads required
+kernel modules.
+
+Change-Id: If69796e225d66eecae8fe07d31ca1db210619753
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ Makefile                        | 1 +
+ build/external/packages/dpdk.mk | 4 ++--
+ extras/rpm/vpp.service          | 2 ++
+ extras/rpm/vpp.spec             | 1 +
+ 4 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 900c1efb4..d3f6fc360 100644
+--- a/Makefile
++++ b/Makefile
+@@ -90,6 +90,7 @@ RPM_DEPENDS += boost boost-devel
+ RPM_DEPENDS += selinux-policy selinux-policy-devel
+ RPM_DEPENDS += ninja-build
+ RPM_DEPENDS += libuuid-devel
++RPM_DEPENDS += rdma-core rdma-core-devel libmnl libmnl-devel
+ 
+ ifeq ($(OS_ID),fedora)
+ 	RPM_DEPENDS += dnf-utils
+diff --git a/build/external/packages/dpdk.mk b/build/external/packages/dpdk.mk
+index 6c46ac298..bc8044625 100644
+--- a/build/external/packages/dpdk.mk
++++ b/build/external/packages/dpdk.mk
+@@ -15,8 +15,8 @@ DPDK_PKTMBUF_HEADROOM        ?= 128
+ DPDK_CACHE_LINE_SIZE         ?= 64
+ DPDK_DOWNLOAD_DIR            ?= $(DL_CACHE_DIR)
+ DPDK_DEBUG                   ?= n
+-DPDK_MLX4_PMD                ?= n
+-DPDK_MLX5_PMD                ?= n
++DPDK_MLX4_PMD                ?= y
++DPDK_MLX5_PMD                ?= y
+ DPDK_MLX5_PMD_DLOPEN_DEPS    ?= n
+ DPDK_TAP_PMD                 ?= n
+ DPDK_FAILSAFE_PMD            ?= n
+diff --git a/extras/rpm/vpp.service b/extras/rpm/vpp.service
+index 40bf9d48c..4310bb9b4 100644
+--- a/extras/rpm/vpp.service
++++ b/extras/rpm/vpp.service
+@@ -1,6 +1,8 @@
+ [Unit]
+ Description=Vector Packet Processing Process
+ After=syslog.target network.target auditd.service
++Wants=rdma.service
++After=rdma-load-modules@rdma.service
+ 
+ [Service]
+ ExecStartPre=-/bin/rm -f /dev/shm/db /dev/shm/global_vm /dev/shm/vpe-api
+diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
+index ef2822370..49a71d5a2 100644
+--- a/extras/rpm/vpp.spec
++++ b/extras/rpm/vpp.spec
+@@ -59,6 +59,7 @@ BuildRequires: cmake
+ %if 0%{rhel} == 7
+ BuildRequires: devtoolset-7-toolchain
+ BuildREquires: openssl-devel
++BuildRequires: rdma-core rdma-core-devel libmnl libmnl-devel
+ BuildRequires: python-devel, python-virtualenv, python-ply
+ BuildRequires: cmake3
+ %endif
+-- 
+2.14.4
+

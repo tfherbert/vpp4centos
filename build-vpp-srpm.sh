@@ -118,32 +118,26 @@ echo ====================================================================
 echo These patches must be applied now because they change the spec file.
 echo ====================================================================
 echo
-if [ "$VERSION" = "18.07" ] || [ "$VERSION" = "18.07.1" ] ; then
-    echo Apply patch 0001-Restore-building-of-debuginfo-RPMs.patch
-    git apply $TOPDIR/patches/0001-Restore-building-of-debuginfo-RPMs.patch
-    echo Apply patch 0002-Add-dpdk-to-source-tarball-for-version-18.07.patch
-    patch -p1 < $TOPDIR/patches/0002-Add-dpdk-to-source-tarball-for-version-18.07.patch
-elif [ "$VERSION" = "18.01.1" ] || [ "$VERSION" = "18.01.2" ] ; then
-    echo Apply patch 0001-Add-dpdk-to-source-tarball-for-version-18.01.1.patch
-    patch -p1 < $TOPDIR/patches/0001-Add-dpdk-to-source-tarball-for-version-18.01.1.patch
-else
-    echo Apply patch 0001-Add-dpdk-tarball-to-Sources-in-srpm
-    patch -p1 < $TOPDIR/patches/0001-Add-dpdk-tarball-to-Sources-in-srpm.patch
+if [ "$VERSION" = "19.01.1" ] ; then
+    echo Apply patch 0001-Add-nfv-common-install-to-Makefile.patch
+    patch -p1 < $TOPDIR/patches/0001-Add-nfv-common-install-to-Makefile.patch
+    echo Apply patch 0001-Add-dpdk-to-source-tarball-for-version-19.01.patch
+    patch -p1 < $TOPDIR/patches/0001-Add-dpdk-to-source-tarball-for-version-19.01.patch
+    echo Apply patch 0001-Fix-vom-cmake-to-build-out-of-git-tree.patch
+    patch -p1 < $TOPDIR/patches/0001-Fix-vom-cmake-to-build-out-of-git-tree.patch
+    echo Apply patch 0001-Add-ipsec-mb-and-nasm-tarballs.patch
+    patch -p1 < $TOPDIR/patches/0001-Add-ipsec-mb-and-nasm-tarballs.patch
+    echo Apply 0001-Enable-MLX4-and-MLX5.patch
+    patch -p1 < $TOPDIR/patches/0001-Enable-MLX4-and-MLX5.patch
+    echo Apply 0001-Suppress-building-of-debuginfo-rpms.patch
+    patch -p1 < $TOPDIR/patches/0001-Suppress-building-of-debuginfo-rpms.patch
 fi
-echo Apply patch 0002-Set-rpmbuild-option-default-to-WITHOUT-aeasni-crypto
-patch -p1 < $TOPDIR/patches/0002-Set-rpmbuild-option-default-to-WITHOUT-aeasni-crypto.patch
-
 echo Apply patch 0002-Set-version-and-release-into-srpm-spec-file.patch
 patch -p1 < $TOPDIR/patches/0002-Set-version-and-release-into-srpm-spec-file.patch
 
 if [[ $RELEASE == "release" ]] ; then
     echo Apply patch to make package release conform to Fedora guidelines
     patch -p1 < $TOPDIR/patches/0001-Make-Package-release-number-confirm-to-Fedora.patch
-fi
-
-if [ ! "$VERSION" = "18.07" ] && [ ! "$VERSION" = "18.07.1" ] ] ; then
-    echo Apply patch 0003-Remove-subunit-from-Centos-requirements.patch
-    patch -p1 < $TOPDIR/patches/0003-Remove-subunit-from-Centos-requirements.patch
 fi
 
 mkdir -p $RPMBUILD/{RPMS,SRPMS,BUILD,SOURCES,SPECS}

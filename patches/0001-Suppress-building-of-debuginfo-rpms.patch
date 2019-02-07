@@ -1,0 +1,31 @@
+From 3787adb8aa04a4f5fe4c739a5fcd5ed6088b3088 Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Sun, 24 Mar 2019 17:25:42 -0400
+Subject: [PATCH] Suppress building of debuginfo rpms.
+
+This is the simplest way to work around the debuginfo symbol
+string edit problem when building short project names
+in mock environment in older rpm-build versions.
+
+Change-Id: Id1680cda1ebedac6615dc4e83cf804fa0b138440
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ extras/rpm/vpp.spec | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
+index ef2822370..dfd21a06b 100644
+--- a/extras/rpm/vpp.spec
++++ b/extras/rpm/vpp.spec
+@@ -9,6 +9,8 @@
+ %define _vpp_tag	 vpp
+ %endif
+ %define _vpp_install_dir install-%{_vpp_tag}-native
++# Suppress building of debug info RPMs for this release. This will be fixed in RHEL 8.
++%define debug_package %{nil}
+ 
+ # Failsafe backport of Python2-macros for RHEL <= 6
+ %{!?python_sitelib: %global python_sitelib      %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+-- 
+2.14.4
+

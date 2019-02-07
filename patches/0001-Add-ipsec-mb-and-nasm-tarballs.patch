@@ -1,0 +1,93 @@
+From d2f70de13e16762ba76a89e6dd6fbd86e3827c59 Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Mon, 18 Mar 2019 18:29:33 -0400
+Subject: [PATCH] Add ipsec-mb and nasm tarballs. Specify specific versions for
+ this release.
+
+Change-Id: I4aa55b25c7202d3f137828f095f0ba55c73cc090
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ extras/rpm/Makefile | 12 ++++++++++++
+ extras/rpm/vpp.spec | 14 ++++++--------
+ 2 files changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/extras/rpm/Makefile b/extras/rpm/Makefile
+index e80289632..242505f68 100644
+--- a/extras/rpm/Makefile
++++ b/extras/rpm/Makefile
+@@ -29,6 +29,14 @@ DPDK_VERSION ?= 18.11
+ DPDK_TARBALL := dpdk-$(DPDK_VERSION).tar.xz
+ DPDK_TAR_URL := $(DPDK_BASE_URL)/$(DPDK_TARBALL)
+ 
++nasm_version            := 2.13.03
++nasm_tarball            := nasm-$(nasm_version).tar.xz
++nasm_url                := http://www.nasm.us/pub/nasm/releasebuilds/$(nasm_version)/$(nasm_tarball)
++
++ipsec_mb_version        := v0.49
++ipsec_mb_tarball        := $(ipsec_mb_version).tar.gz
++ipsec_mb_url            := http://github.com/01org/intel-ipsec-mb/archive/$(ipsec_mb_tarball)
++
+ all: RPM
+ 
+ # SUSE rolling-release (a.k.a. Tumbleweed)
+@@ -52,10 +60,14 @@ spec:
+ 
+ srpm: spec
+ 	curl -o $(RPMBUILD)/SOURCES/$(DPDK_TARBALL) -LO $(DPDK_TAR_URL)
++	curl -o $(RPMBUILD)/SOURCES/$(nasm_tarball) -LO $(nasm_url)
++	curl -o $(RPMBUILD)/SOURCES/$(ipsec_mb_tarball) -LO $(ipsec_mb_url)
+ 	rpmbuild -bs \
+ 	  --define "_topdir $(RPMBUILD)" \
+ 	  --define "_version $(VERSION)" \
+ 	  --define "_release $(RELEASE)" \
++	  --define "_nasm_version $(nasm_version)" \
++	  --define "_ipsec_mb_version $(ipsec_mb_version)" \
+ 	  $(RPMBUILD)/SPECS/$(SPEC_FILE)
+ 	mv $$(find $(RPMBUILD)/SRPMS -name \*.src.rpm -type f) $(BR)
+ 
+diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
+index b20af85dc..6f64c3efd 100644
+--- a/extras/rpm/vpp.spec
++++ b/extras/rpm/vpp.spec
+@@ -1,4 +1,3 @@
+-%bcond_without aesni
+ %{!?_topdir:%define _topdir %(pwd)}
+ %define _vpp_build_dir   build-tool-native
+ %define _unitdir         /lib/systemd/system
+@@ -74,6 +73,8 @@ BuildRequires: selinux-policy selinux-policy-devel
+ 
+ Source: %{name}-%{_version}-%{_release}.tar.xz
+ Source1: http://fast.dpdk.org/rel/dpdk-18.11.tar.xz
++Source2: http://www.nasm.us/pub/nasm/releasebuilds/2.13.03/nasm-2.13.03.tar.xz
++Source3: http://github.com/01org/intel-ipsec-mb/archive/v0.49.tar.gz
+ # Source: vpp-latest.tar.xz
+ 
+ %description
+@@ -152,6 +153,9 @@ This package contains a tailored VPP SELinux policy
+ %prep
+ %setup -q -n %{name}-%{_version}
+ cp %{_sourcedir}/dpdk-* build/external
++mkdir -p build/external/downloads
++cp %{_sourcedir}/nasm-* build/external/downloads
++cp %{_sourcedir}/v*.tar.gz build/external/downloads
+ 
+ %pre
+ # Add the vpp group
+@@ -161,13 +165,7 @@ groupadd -f -r vpp
+ %if 0%{?rhel}
+ . /opt/rh/devtoolset-7/enable
+ %endif
+-%if %{with aesni}
+-    make bootstrap
+-    make -C build-root PLATFORM=vpp TAG=%{_vpp_tag} install-packages
+-%else
+-    make bootstrap AESNI=n
+-    make -C build-root PLATFORM=vpp AESNI=n TAG=%{_vpp_tag} install-packages
+-%endif
++make -C build-root PLATFORM=vpp TAG=%{_vpp_tag} install-packages
+ cd %{_mu_build_dir}/../src/vpp-api/python && %py2_build
+ cd %{_mu_build_dir}/../extras/selinux && make -f %{_datadir}/selinux/devel/Makefile
+ 
+-- 
+2.14.4
+

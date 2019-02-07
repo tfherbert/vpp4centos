@@ -1,0 +1,31 @@
+From 2f3e3c2e85e210234ebc8eb7d9c635ced01d7ea5 Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Tue, 5 Mar 2019 19:12:12 -0500
+Subject: [PATCH] Add nfv command and ninja-build.
+
+Change-Id: I3a7a30cb0654847cce1631394e83fb4e682b137d
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ extras/rpm/vpp.spec | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
+index ef2822370..28dcdd3a8 100644
+--- a/extras/rpm/vpp.spec
++++ b/extras/rpm/vpp.spec
+@@ -57,10 +57,11 @@ BuildRequires: mbedtls-devel
+ BuildRequires: cmake
+ %else
+ %if 0%{rhel} == 7
++BuildRequires: centos-release-nfv-common
+ BuildRequires: devtoolset-7-toolchain
+ BuildREquires: openssl-devel
+ BuildRequires: python-devel, python-virtualenv, python-ply
+-BuildRequires: cmake3
++BuildRequires: cmake3 ninja-build
+ %endif
+ %endif
+ BuildRequires: libffi-devel
+-- 
+2.14.4
+

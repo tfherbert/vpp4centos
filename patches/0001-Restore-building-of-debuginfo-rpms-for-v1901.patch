@@ -1,0 +1,50 @@
+From 1f81429a2fbcaae51022595dade817bd9f8a1282 Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Thu, 7 Feb 2019 12:14:31 -0500
+Subject: [PATCH] Restore building of debuginfo rpms for v1901"
+
+Change-Id: I622c76d70ca5628752860a79fedfe3662dba3082
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ extras/rpm/vpp.spec | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
+index ef2822370..d3b6f9b49 100644
+--- a/extras/rpm/vpp.spec
++++ b/extras/rpm/vpp.spec
+@@ -3,7 +3,8 @@
+ %define _vpp_build_dir   build-tool-native
+ %define _unitdir         /lib/systemd/system
+ %define _builddir        %{_topdir}
+-%define _mu_build_dir    %{_topdir}/%{name}-%{_version}/build-root
++%define _tmp_build_dir   %{name}-%{_version}.0
++%define _mu_build_dir    %{_topdir}/%{_tmp_build_dir}/build-root
+ %define _vpp_tag	 %{getenv:TAG}
+ %if "%{_vpp_tag}" == ""
+ %define _vpp_tag	 vpp
+@@ -148,13 +149,20 @@ Requires(post): selinux-policy-base >= %{selinux_policyver}, selinux-policy-targ
+ This package contains a tailored VPP SELinux policy
+ 
+ %prep
+-%setup -q -n %{name}-%{_version}
++# Unpack into dir with longer name as work around of debugedit bug in in rpm-build 4.13
++rm -rf %{name}-%{_version}
++rm -rf %{_tmp_build_dir}
++/usr/bin/xz -dc '%{_sourcedir}/%{name}-%{_version}-%{_release}.tar.xz' | /usr/bin/tar -xf -
++mv %{name}-%{_version} %{_tmp_build_dir}
++cd '%{_tmp_build_dir}'
++/usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
+ 
+ %pre
+ # Add the vpp group
+ groupadd -f -r vpp
+ 
+ %build
++cd '%{_tmp_build_dir}'
+ %if 0%{?rhel}
+ . /opt/rh/devtoolset-7/enable
+ %endif
+-- 
+2.14.4
+

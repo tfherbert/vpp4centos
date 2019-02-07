@@ -1,5 +1,13 @@
 
 %changelog
+* Sun Mar 24 2019 Thomas F Herbert <therbert@redhat.com> 19.01.1-1
+- Set release git tag to v19.01-1
+- Add dpdk 1811 tarball to Sources
+- Add ipsec multi buffer and nasm tarballs
+- Suppress building of debuginfo RPMs
+- Enable Mellanox 4 and 5 PMDs
+- Add nfv common build dependency and remove epel dependency
+- Fix cmake build problem when building out of git tree
 * Fri Sep 28 2018 Thomas F Herbert <therbert@redhat.com> 18.07.1-1
 - Set release git tag to v18.07-1
 - Backport mlx patch for DPDK >= 18.05

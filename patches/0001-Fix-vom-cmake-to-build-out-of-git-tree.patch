@@ -1,0 +1,103 @@
+From f9c9b185b11209f1b6008c7e2d5c4450592db237 Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Wed, 13 Mar 2019 19:24:16 -0400
+Subject: [PATCH] Fix vom cmake to build out of git tree. Process release
+ string.
+
+Change-Id: I66faf52bbfbbd3ed8a9db4ca13ca825ed81018be
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ extras/vom/CMakeLists.txt | 26 ++++++++++++++++++++++++++
+ src/cmake/pack.cmake      | 20 +++++++++++---------
+ 2 files changed, 37 insertions(+), 9 deletions(-)
+
+diff --git a/extras/vom/CMakeLists.txt b/extras/vom/CMakeLists.txt
+index a04df5d52..d44aa64d7 100644
+--- a/extras/vom/CMakeLists.txt
++++ b/extras/vom/CMakeLists.txt
+@@ -18,6 +18,31 @@ project(vom)
+ include(CheckCCompilerFlag)
+ include(CheckCXXCompilerFlag)
+ 
++##############################################################################
++# Extract version from git or run version script
++##############################################################################
++  execute_process(
++    COMMAND git describe --long --match v*
++    OUTPUT_VARIABLE GVER
++    OUTPUT_STRIP_TRAILING_WHITESPACE
++    ERROR_QUIET
++  )
++
++if (NOT GVER)
++  execute_process(
++    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
++    COMMAND ../../src/scripts/version
++    OUTPUT_VARIABLE SVER
++    OUTPUT_STRIP_TRAILING_WHITESPACE
++  )
++  string(REPLACE "${SVER}" "v${SVER}" SVER2 ${SVER})
++  string(REPLACE "~" "-" SVER3 ${SVER2})
++  set (VPP_VER ${SVER3})
++else ()
++  set (VPP_VER ${GVER})
++endif()
++
++
+ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+ set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
+ set(CMAKE_INSTALL_MESSAGE NEVER)
+@@ -32,4 +57,5 @@ add_vpp_packaging(
+   NAME "vom"
+   VENDOR "fd.io"
+   DESCRIPTION "VPP Object Model"
++  VPP_VERSION "${VPP_VER}"
+ )
+diff --git a/src/cmake/pack.cmake b/src/cmake/pack.cmake
+index 1df19811f..18b247e06 100644
+--- a/src/cmake/pack.cmake
++++ b/src/cmake/pack.cmake
+@@ -18,7 +18,7 @@
+ macro(add_vpp_packaging name)
+   cmake_parse_arguments(ARG
+     ""
+-    "NAME;DESCRIPION;VENDOR"
++    "NAME;VENDOR;DESCRIPION;VPP_VERSION"
+     ""
+     ${ARGN}
+   )
+@@ -33,13 +33,11 @@ macro(add_vpp_packaging name)
+     set(OS_${_name} ${_value})
+   endforeach()
+ 
+-  # extract version from git
+-  execute_process(
+-    COMMAND git describe --long --match v*
+-    OUTPUT_VARIABLE VER
+-    OUTPUT_STRIP_TRAILING_WHITESPACE
+-  )
+-  string(REGEX REPLACE "v(.*)-([0-9]+)-(g[0-9a-f]+)" "\\1;\\2;\\3" VER ${VER})
++  set(VER ${ARG_VPP_VERSION})
++
++  string(REPLACE "release" "1-release" NVER ${VER})
++  set(VER ${NVER})
++  string(REGEX REPLACE "v(.*)-([0-9]+)-(g|r[0-9a-f]+)" "\\1;\\2;\\3" VER ${VER})
+   list(GET VER 0 tag)
+   string(REPLACE "-" "~" tag ${tag})
+   list(GET VER 1 commit_num)
+@@ -51,7 +49,11 @@ macro(add_vpp_packaging name)
+     set(rpm_ver "${tag}")
+   else()
+     set(deb_ver "${tag}~${commit_num}~${commit_name}")
+-    set(rpm_ver "${tag}~${commit_num}_${commit_name}")
++    if("${commit_name}" EQUAL "release")
++      set(rpm_ver "${tag}-${commit_num}")
++    else()
++      set(rpm_ver "${tag}~${commit_num}_${commit_name}")
++    endif()
+   endif()
+ 
+   get_cmake_property(components COMPONENTS)
+-- 
+2.14.4
+

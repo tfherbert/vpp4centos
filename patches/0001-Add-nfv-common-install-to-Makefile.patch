@@ -1,0 +1,46 @@
+From b9e81556ff70a07ed97006490d8610748edd270b Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Tue, 5 Mar 2019 18:57:36 -0500
+Subject: [PATCH] Add nfv common install to Makefile. Add nfv command and
+ ninja-build.
+
+Change-Id: I4182182834ed4131057eba1fef040b8e1f114667
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ Makefile            | 2 +-
+ extras/rpm/vpp.spec | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 900c1efb4..0ad1271aa 100644
+--- a/Makefile
++++ b/Makefile
+@@ -298,7 +298,7 @@ ifeq ($(OS_ID),rhel)
+ 	@sudo -E yum install $(CONFIRM) $(RPM_DEPENDS)
+ 	@sudo -E debuginfo-install $(CONFIRM) glibc openssl-libs mbedtls-devel zlib
+ else ifeq ($(OS_ID),centos)
+-	@sudo -E yum install $(CONFIRM) centos-release-scl-rh
++	@sudo -E yum install $(CONFIRM) centos-release-nfv-common
+ 	@sudo -E yum groupinstall $(CONFIRM) $(RPM_DEPENDS_GROUPS)
+ 	@sudo -E yum install $(CONFIRM) $(RPM_DEPENDS)
+ 	@sudo -E debuginfo-install $(CONFIRM) glibc openssl-libs mbedtls-devel zlib
+diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
+index ef2822370..28dcdd3a8 100644
+--- a/extras/rpm/vpp.spec
++++ b/extras/rpm/vpp.spec
+@@ -57,10 +57,11 @@ BuildRequires: mbedtls-devel
+ BuildRequires: cmake
+ %else
+ %if 0%{rhel} == 7
++BuildRequires: centos-release-nfv-common
+ BuildRequires: devtoolset-7-toolchain
+ BuildREquires: openssl-devel
+ BuildRequires: python-devel, python-virtualenv, python-ply
+-BuildRequires: cmake3
++BuildRequires: cmake3 ninja-build
+ %endif
+ %endif
+ BuildRequires: libffi-devel
+-- 
+2.14.4
+

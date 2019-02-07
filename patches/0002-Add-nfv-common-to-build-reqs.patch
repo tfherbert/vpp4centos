@@ -1,0 +1,35 @@
+From 61fbf130679294d3fb4b5fac4d2d0ff9c969cffe Mon Sep 17 00:00:00 2001
+From: Thomas F Herbert <therbert@redhat.com>
+Date: Mon, 18 Feb 2019 15:45:06 -0500
+Subject: [PATCH 2/2] Add nfv common to build reqs Correct syntax for rhel.
+
+Change-Id: Ieb476e389aafd0043f12bb4fc0b15e437fd14c21
+Signed-off-by: Thomas F Herbert <therbert@redhat.com>
+---
+ extras/rpm/vpp.spec | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/extras/rpm/vpp.spec b/extras/rpm/vpp.spec
+index d3b6f9b49..8008833ee 100644
+--- a/extras/rpm/vpp.spec
++++ b/extras/rpm/vpp.spec
+@@ -50,6 +50,7 @@ Release: %{_release}
+ Requires: vpp-lib = %{_version}-%{_release}, vpp-selinux-policy = %{_version}-%{_release}, net-tools, pciutils, python
+ BuildRequires: systemd, chrpath
+ BuildRequires: check, check-devel
++BuildRequires: centos-release-nfv-common
+ %if 0%{?fedora}
+ BuildRequires: subunit, subunit-devel
+ BuildRequires: compat-openssl10-devel
+@@ -57,7 +58,7 @@ BuildRequires: python2-devel, python2-virtualenv, python2-ply
+ BuildRequires: mbedtls-devel
+ BuildRequires: cmake
+ %else
+-%if 0%{rhel} == 7
++%if 0%{?rhel}
+ BuildRequires: devtoolset-7-toolchain
+ BuildREquires: openssl-devel
+ BuildRequires: python-devel, python-virtualenv, python-ply
+-- 
+2.14.4
+
